@@ -1,0 +1,31 @@
+id,type,amount,extraData
+1,home,150.0,High risk zone
+2,car,2000.0,Model 2010
+3,life,500.0,65 years old client
+4,home,120.0,Safe zone
+5,car,1500.0,Model 2020
+6,life,300.0,30 years old client
+7,home,180.0,Flood risk zone
+8,car,2500.0,Model 2022
+9,life,450.0,55 years old client
+10,home,110.0,Suburban area
+11,car,1200.0,Model 2005
+12,life,200.0,25 years old client
+13,home,200.0,Earthquake risk zone
+14,car,3000.0,Model 2024
+15,life,600.0,70 years old client
+16,home,130.0,Urban area
+17,car,1800.0,Model 2018
+18,life,350.0,40 years old client
+19,home,160.0,Risk zone B
+20,car,2200.0,Model 2015
+21,life,550.0,62 years old client
+22,home,140.0,Standard zone
+23,car,1600.0,Model 2012
+24,life,250.0,28 years old client
+25,home,190.0,Coastal area
+26,car,2800.0,Model 2023
+27,life,400.0,45 years old client
+28,home,105.0,Low risk zone
+29,car,1100.0,Model 2000
+30,life,700.0,75 years old client
