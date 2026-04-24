@@ -1,31 +1,50 @@
-id,type,amount,extraData
-1,home,150.0,High risk zone
-2,car,2000.0,Model 2010
-3,life,500.0,65 years old client
-4,home,120.0,Safe zone
-5,car,1500.0,Model 2020
-6,life,300.0,30 years old client
-7,home,180.0,Flood risk zone
-8,car,2500.0,Model 2022
-9,life,450.0,55 years old client
-10,home,110.0,Suburban area
-11,car,1200.0,Model 2005
-12,life,200.0,25 years old client
-13,home,200.0,Earthquake risk zone
-14,car,3000.0,Model 2024
-15,life,600.0,70 years old client
-16,home,130.0,Urban area
-17,car,1800.0,Model 2018
-18,life,350.0,40 years old client
-19,home,160.0,Risk zone B
-20,car,2200.0,Model 2015
-21,life,550.0,62 years old client
-22,home,140.0,Standard zone
-23,car,1600.0,Model 2012
-24,life,250.0,28 years old client
-25,home,190.0,Coastal area
-26,car,2800.0,Model 2023
-27,life,400.0,45 years old client
-28,home,105.0,Low risk zone
-29,car,1100.0,Model 2000
-30,life,700.0,75 years old client
+LIFE,POL-001,C001,Juan Perez,30,50000
+LIFE,POL-002,C002,Maria Garcia,65,120000
+CAR,POL-003,C003,Carlos Rodriguez,45,25000,2018
+CAR,POL-004,C004,Ana Martinez,38,15000,2012
+HOME,POL-005,C005,Luis Sanchez,50,200000,false
+HOME,POL-006,C006,Elena Gomez,41,180000,true
+LIFE,POL-007,C007,Roberto Diaz,72,150000
+CAR,POL-008,C008,Sofia Vega,28,30000,2021
+HOME,POL-009,C009,Ricardo Rios,55,350000,true
+CAR,POL-010,C010,Laura Nuñez,47,40000,2014
+LIFE,POL-011,C011,Andres Castro,33,80000
+LIFE,POL-012,C012,Patricia Soto,58,95000
+CAR,POL-013,C013,Fernando Lopez,61,22000,2016
+CAR,POL-014,C014,Rosa Morales,22,12000,2010
+HOME,POL-015,C015,Gabriel Torres,37,280000,false
+HOME,POL-016,C016,Isabel Flores,44,150000,false
+LIFE,POL-017,C017,Miguel Angel,68,110000
+CAR,POL-018,C018,Carmen Ruiz,52,35000,2019
+HOME,POL-019,C019,Jose Ramirez,49,420000,true
+CAR,POL-020,C020,Beatriz Herrera,31,28000,2017
+LIFE,POL-021,C021,Antonio Jimenez,25,60000
+LIFE,POL-022,C022,Marta Ortiz,70,180000
+CAR,POL-023,C023,Diego Vargas,36,20000,2013
+CAR,POL-024,C024,Lucia Mendez,42,17000,2015
+HOME,POL-025,C025,Francisco Silva,56,310000,true
+HOME,POL-026,C026,Silvia Romero,63,240000,false
+LIFE,POL-027,C027,Raul Navarro,48,130000
+CAR,POL-028,C028,Paula Delgado,39,26000,2020
+HOME,POL-029,C029,Oscar Medina,53,190000,true
+CAR,POL-030,C030,Clara Rojas,27,32000,2022
+LIFE,POL-031,C031,Hugo Guerrero,46,140000
+LIFE,POL-032,C032,Victoria Cortes,59,105000
+CAR,POL-033,C033,Manuel Castillo,64,21000,2011
+CAR,POL-034,C034,Irene Santos,34,19000,2016
+HOME,POL-035,C035,Joaquin Lozano,40,265000,false
+HOME,POL-036,C036,Julia Ramos,29,175000,true
+LIFE,POL-037,C037,Alejandro Marín,75,200000
+CAR,POL-038,C038,Daniela Gil,32,24000,2018
+HOME,POL-039,C039,Sergio Serrano,51,330000,false
+CAR,POL-040,C040,Alicia Blanco,43,16000,2014
+LIFE,POL-041,C041,Ramon Molina,35,75000
+LIFE,POL-042,C042,Esther Rubio,67,160000
+CAR,POL-043,C043,Marcos Suarez,26,29000,2019
+CAR,POL-044,C044,Sara Vazquez,54,14000,2009
+HOME,POL-045,C045,Ignacio Hidalgo,57,295000,true
+HOME,POL-046,C046,Cristina Pascual,40,210000,false
+LIFE,POL-047,C047,Felipe Bravo,62,125000
+CAR,POL-048,C048,Natalia Ferrer,30,27000,2020
+HOME,POL-049,C049,Vicente Garrido,44,380000,true
+CAR,POL-050,C050,Gloria Calvo,37,31000,2017
