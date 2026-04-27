@@ -24,27 +24,44 @@ public class FileHandler {
     private Insurance parseLine(String line) {
 
         String[] parts = line.split(SEPARATOR);
-        String policyType = parts[0].trim();
-        String policyId = parts[1].trim();
-        String clientId = parts[2].trim();
-        String clientName = parts[3].trim();
-        Integer clientAge = Integer.parseInt(parts[4].trim());
-        Double policyAmount = Double.parseDouble(parts[5].trim());
+        if (parts.length >= 6) {
+            String policyType = parts[0].trim();
+            String policyId = parts[1].trim();
+            String clientId = parts[2].trim();
+            String clientName = parts[3].trim();
+            Integer clientAge = Integer.parseInt(parts[4].trim());
+            Double policyAmount = Double.parseDouble(parts[5].trim());
 
-        Client client = new Client(clientId, clientName, clientAge);
+            Client client = new Client(clientId, clientName, clientAge);
 
-        return switch (policyType) {
-            case "LIFE" -> new LifeInsurance(policyId, client, policyAmount);
-            case "CAR" -> {
-                Integer carYear = Integer.parseInt(parts[6].trim());
-                yield new CarInsurance(policyId, client, policyAmount, carYear);
-            }
-            case "HOME" -> {
-                Boolean isHighRisk = Boolean.parseBoolean(parts[6].trim());
-                yield new HomeInsurance(policyId, client, policyAmount, isHighRisk);
-            }
-            default -> throw new IllegalArgumentException("Unknown insurance type: " + policyType);
-        };
+            return switch (policyType) {
+                case "LIFE" -> new LifeInsurance(policyId, client, policyAmount);
+                case "CAR" -> {
+                    if(parts.length > 6) {
+                        Integer carYear = Integer.parseInt(parts[6].trim());
+                        yield new CarInsurance(policyId, client, policyAmount, carYear);
+                    }else{
+                        throw new IllegalArgumentException(
+                                "Missing data about policy in the line: " + line);
+                    }
+                }
+                case "HOME" -> {
+                    if(parts.length > 6) {
+                        Boolean isHighRisk = Boolean.parseBoolean(parts[6].trim());
+                        yield new HomeInsurance(policyId, client, policyAmount, isHighRisk);
+                    } else{
+                        throw new IllegalArgumentException(
+                                "Missing data about policy in the line: " + line);
+                    }
+                }
+                default ->
+                        throw new IllegalArgumentException(
+                                "Unknown insurance type: " + policyType);
+            };
+        }else{
+            throw new IllegalArgumentException(
+                    "Missing data about policy in the line: " + line);
+        }
     }
 }
 
