@@ -1,5 +1,6 @@
 package io;
 
+import exception.InvalidPolicyDataException;
 import model.*;
 import org.jspecify.annotations.NonNull;
 
@@ -41,7 +42,7 @@ public class FileHandler {
                         Integer carYear = Integer.parseInt(parts[6].trim());
                         yield new CarInsurance(policyId, client, policyAmount, carYear);
                     }else{
-                        throw new IllegalArgumentException(
+                        throw new InvalidPolicyDataException(
                                 "Missing data about policy in the line: " + line);
                     }
                 }
@@ -50,16 +51,16 @@ public class FileHandler {
                         Boolean isHighRisk = Boolean.parseBoolean(parts[6].trim());
                         yield new HomeInsurance(policyId, client, policyAmount, isHighRisk);
                     } else{
-                        throw new IllegalArgumentException(
+                        throw new InvalidPolicyDataException(
                                 "Missing data about policy in the line: " + line);
                     }
                 }
                 default ->
-                        throw new IllegalArgumentException(
+                        throw new InvalidPolicyDataException(
                                 "Unknown insurance type: " + policyType);
             };
         }else{
-            throw new IllegalArgumentException(
+            throw new InvalidPolicyDataException(
                     "Missing data about policy in the line: " + line);
         }
     }
