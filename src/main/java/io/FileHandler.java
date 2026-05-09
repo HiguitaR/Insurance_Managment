@@ -7,22 +7,24 @@ import org.jspecify.annotations.NonNull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class FileHandler {
     private static final String SEPARATOR = ",";
 
-    public List<Insurance> loadFile(String filePath) throws IOException {
-        try (var lines = Files.lines(Path.of(filePath))) {
-            return lines.map(this::parseLine)
-                    .collect(Collectors.toList());
+    public List<Insurance> loadFile(String filePath)
+            throws IOException, InvalidPolicyDataException {
+        List<Insurance> policies = new ArrayList<>();
+        for(String line : Files.readAllLines(Path.of(filePath))){
+            policies.add(parseLine(line));
         }
+        return policies;
     }
 
     @NonNull
-    private Insurance parseLine(String line) {
+    private Insurance parseLine(String line) throws InvalidPolicyDataException {
 
         String[] parts = line.split(SEPARATOR);
         if (parts.length >= 6) {
@@ -50,7 +52,12 @@ public class FileHandler {
                 throw new InvalidPolicyDataException("Missing data about policy in the line: "
                         + line);
             }
-            int clientAge = Integer.parseInt(parts[4].trim());
+            int clientAge;
+            try {
+                clientAge = Integer.parseInt(parts[4].trim());
+            } catch (NumberFormatException e) {
+                throw new InvalidPolicyDataException("Invalid age format in the line: " + line);
+            }
             if(clientAge <= 0){
                 throw new InvalidPolicyDataException("Wrong data about policy in the line: "
                         + line);
@@ -59,7 +66,12 @@ public class FileHandler {
                 throw new InvalidPolicyDataException("Missing data about policy in the line: "
                         + line);
             }
-            Double policyAmount = Double.parseDouble(parts[5].trim());
+            Double policyAmount;
+            try {
+                policyAmount = Double.parseDouble(parts[5].trim());
+            } catch (NumberFormatException e) {
+                throw new InvalidPolicyDataException("Invalid policy amount format in the line: " + line);
+            }
             if(policyAmount <= 0){
                 throw new InvalidPolicyDataException("Wrong data about policy in the line: "
                         + line);
@@ -70,11 +82,12 @@ public class FileHandler {
             return switch (policyType) {
                 case "LIFE" -> new LifeInsurance(policyId, client, policyAmount);
                 case "CAR" -> {
-                    if(Integer.parseInt(parts[6].trim()) < 0){
-                        throw new InvalidPolicyDataException("Wrong data about policy in the line: "
-                                + line);
+                    int carYear;
+                    try {
+                        carYear = Integer.parseInt(parts[6].trim());
+                    } catch (NumberFormatException e) {
+                        throw new InvalidPolicyDataException("Invalid car year format in the line: " + line);
                     }
-                    int carYear = Integer.parseInt(parts[6].trim());
                     if(carYear < 1000 || carYear > 9999){
                         throw new InvalidPolicyDataException("Wrong data about policy in the line: "
                                 + line);
@@ -84,12 +97,12 @@ public class FileHandler {
                 }
                 case "HOME" -> {
                     if(parts.length > 6) {
-                        String riskValue = parts[7].trim();
+                        String riskValue = parts[6].trim();
                         if (!riskValue.equals("true") && !riskValue.equals("false")){
                             throw new InvalidPolicyDataException("Wrong data about policy in the line: "
                                     + line);
                         }
-                        Boolean isHighRisk = Boolean.parseBoolean(parts[7].trim());
+                        Boolean isHighRisk = Boolean.parseBoolean(parts[6].trim());
                         yield new HomeInsurance(policyId, client, policyAmount, isHighRisk);
                     } else{
                         throw new InvalidPolicyDataException(
