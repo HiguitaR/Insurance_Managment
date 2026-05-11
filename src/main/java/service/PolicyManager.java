@@ -27,7 +27,6 @@ public class PolicyManager {
 
         System.out.println("Enter a Customer name: ");
         String name = input.nextLine().strip();
-        input.nextLine();
         int age = promptInt("Enter the customer's age: ",
                 "The age client couldn't be negative or zero");
 
@@ -41,6 +40,11 @@ public class PolicyManager {
         };
 
         if(insurance != null){
+            boolean idExists = insurances.stream()
+                    .anyMatch(i -> i.policyId().equals(insurance.policyId()));
+            if(idExists){
+                throw new BussinessRuleException("Policy ID already exists: " + insurance.policyId());
+            }
             insurances.add(insurance);
             System.out.println("The Policy :" + insurance.policyId() + " Added Successful");
         }else{
@@ -58,9 +62,8 @@ public class PolicyManager {
 
         if(!clientId.equals("C000")){
             System.out.println("The last customer id: " + clientId +
-                    "Enter a consecutive customer id: ");
+                    "Enter a next consecutive customer id: ");
             clientId = input.nextLine();
-            input.nextLine();
         }
         return clientId;
     }
@@ -69,10 +72,9 @@ public class PolicyManager {
         String policyId = getLastPolicyId();
 
         if(!policyId.equals("POL-000")){
-            System.out.println("The last policy id: " + policyId +
-                    "Enter a consecutive policy id: ");
+            System.out.println("The last policy id : " + policyId +
+                    "\nEnter a next consecutive policy id : ");
             policyId = input.nextLine();
-            input.nextLine();
         }
         return policyId;
     }
