@@ -11,7 +11,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ReportService {
-    public void generaterReport(List<Insurance> insurance){
+
+    private final List<Insurance> insurance;
+
+    public ReportService(List<Insurance> insurance) {
+        this.insurance = insurance;
+    }
+
+    public void generaterReport(){
+        InsuranceQuote quoter = new InsuranceQuote();
         if(insurance == null || insurance.isEmpty()){
             System.out.println("There are no policies to generate a report!");
             return;
@@ -23,7 +31,7 @@ public class ReportService {
         //Report 1. Average Premium
         double average = insurance.stream()
                 .filter(i -> i.amount() != null)
-                .mapToDouble(Insurance::amount)
+                .mapToDouble(quoter::calculatePremium)
                 .average()
                 .orElse(0.0);
         System.out.println("1. Average premium of all policies: $" + average);
@@ -41,12 +49,12 @@ public class ReportService {
         //Report 3. Top 3 Most Expensive
         int[] counter = {1};
         insurance.stream()
-                .filter(i -> i.amount() != null)
-                .sorted(Comparator.comparingDouble(Insurance::amount).reversed())
+                .sorted(Comparator.comparingDouble(quoter::calculatePremium).reversed())
                 .limit(3)
                 .forEach(i -> {
                     System.out.println("   #" + counter[0]++ + " [" + i.policyId() + "] " +
-                            getType(i) + " | " + i.client().name() + " | Prima: $" + i.amount());
+                            getType(i) + " | " + i.client().name() + " | Prima: $" +
+                            quoter.calculatePremium(i));
                 });
     }
 
@@ -55,7 +63,6 @@ public class ReportService {
             case LifeInsurance life -> "LIFE";
             case CarInsurance car -> "CAR";
             case HomeInsurance home -> "HOME";
-            default -> "UNKNOW";
         };
     }
 }
