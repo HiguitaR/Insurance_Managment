@@ -5,7 +5,7 @@ import model.HomeInsurance;
 import model.Insurance;
 import model.LifeInsurance;
 
-public class InsuranceQuote {
+public class InsuranceQuoter {
     public double calculatePremium(Insurance insurance){
         double base;
 

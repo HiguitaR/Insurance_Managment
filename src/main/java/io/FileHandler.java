@@ -17,9 +17,14 @@ public class FileHandler {
     public List<Insurance> loadFile(String filePath)
             throws IOException, InvalidPolicyDataException {
         List<Insurance> policies = new ArrayList<>();
-        for(String line : Files.readAllLines(Path.of(filePath))){
-            policies.add(parseLine(line));
-        }
+        Files.lines(Path.of(filePath))
+                .forEach(line -> {
+                    try{
+                        policies.add(parseLine(line));
+                    }catch (InvalidPolicyDataException e){
+                        throw new RuntimeException(e);
+                    }
+                });
         return policies;
     }
 

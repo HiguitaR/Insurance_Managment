@@ -1,9 +1,10 @@
 package service;
 
-import exception.BussinessRuleException;
+import exception.BusinessRuleException;
 import model.*;
 
 
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
@@ -17,8 +18,34 @@ public class PolicyManager {
         this.insurances = insurances;
     }
 
-    public Object listAll(){
-        return insurances.isEmpty() ? "Empty List" : insurances;
+    public void listAll(){
+        if(insurances.isEmpty()){
+            System.out.println("No insurances found!");
+            return;
+        }
+
+        NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.US);
+        InsuranceQuoter quoter = new InsuranceQuoter();
+
+        for(Insurance policy : insurances){
+            double premium = quoter.calculatePremium(policy);
+            System.out.printf("[%s] %s | Client: %s (%s) | Amount: %s | Annual premium: %s%n",
+                    policy.policyId(),
+                    getType(policy),
+                    policy.client().name(),
+                    policy.client().clientId(),
+                    currency.format(policy.amount()),
+                    currency.format(premium)
+                    );
+        }
+    }
+
+    private String getType(Insurance policy){
+        return switch (policy) {
+            case LifeInsurance l -> "LIFE";
+            case CarInsurance c -> "CAR";
+            case HomeInsurance h -> "HOME";
+        };
     }
 
     public void newPolicy (String policyType) {
@@ -43,12 +70,12 @@ public class PolicyManager {
             boolean idExists = insurances.stream()
                     .anyMatch(i -> i.policyId().equals(insurance.policyId()));
             if(idExists){
-                throw new BussinessRuleException("Policy ID already exists: " + insurance.policyId());
+                throw new BusinessRuleException("Policy ID already exists: " + insurance.policyId());
             }
             insurances.add(insurance);
             System.out.println("The Policy :" + insurance.policyId() + " Added Successful");
         }else{
-            throw new BussinessRuleException("Wrong insurance type");
+            throw new BusinessRuleException("Wrong insurance type");
         }
     }
 
@@ -98,7 +125,7 @@ public class PolicyManager {
         int value = input.nextInt();
         input.nextLine();
         if(errorMessage != null && value <= 0){
-            throw new BussinessRuleException(errorMessage);
+            throw new BusinessRuleException(errorMessage);
         }
         return value;
     }
@@ -108,7 +135,7 @@ public class PolicyManager {
         double value = input.nextDouble();
         input.nextLine();
         if(errorMessage != null && value <= 0.0){
-            throw new BussinessRuleException(errorMessage);
+            throw new BusinessRuleException(errorMessage);
         }
         return value;
     }

@@ -1,18 +1,27 @@
 import exception.InvalidPolicyDataException;
 import io.FileHandler;
+import model.CarInsurance;
+import model.HomeInsurance;
 import model.Insurance;
+import model.LifeInsurance;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import service.PolicyManager;
 import service.ReportService;
 
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
+    private static final Logger logger = LogManager.getLogger(Main.class);
     public static void main(String[] args) {
-
+        
         Scanner sc = new Scanner(System.in);
+        NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.US);
 
         System.out.println("========================================");
         System.out.println("   Insurance Management System v1.0");
@@ -32,12 +41,14 @@ public class Main {
             System.out.println("--- Preview: First 5 Policies ---");
             policies.stream()
                     .limit(5)
-                    .forEach(p -> System.out.printf("[%s] Type: %-13s | Holder: %-15s | Amount: $%,10.2f%n",
+                    .forEach(p -> System.out.printf("[%s] %s | Holder: %s " +
+                                    "| Amount: %s%n",
                             p.policyId(),
-                            p.getClass().getSimpleName(),
+                            getType(p),
                             p.client().name(),
-                            p.amount()));
+                            currency.format(p.amount())));
             System.out.println("----------------------------------------");
+
             PolicyManager policyManager = new PolicyManager(policies);
             ReportService reportService = new ReportService(policies);
 
@@ -60,7 +71,7 @@ public class Main {
                         reportService.generaterReport();
                         break;
                     case "5":
-                        System.out.println("Exiting the application!");
+                        System.out.println("Closing App see you soon!...");
                         break;
                     default:
                         System.out.println("Enter a valid Option");
@@ -77,9 +88,7 @@ public class Main {
             System.err.println("DATA WARNING: " + e.getMessage());
         } catch (Exception e) {
             System.err.println("UNEXPECTED ERROR: " + e.getMessage());
-            e.printStackTrace();
         }
-
     }
 
     private static void menuShow(){
@@ -91,6 +100,14 @@ public class Main {
         System.out.println("4. View Management Reports ");
         System.out.println("5. Exit ");
         System.out.println("---------------------------------");
+    }
+
+    private static String getType(Insurance policy){
+        return switch (policy) {
+            case LifeInsurance l -> "LIFE";
+            case CarInsurance c -> "CAR";
+            case HomeInsurance h -> "HOME";
+        };
     }
 
 }

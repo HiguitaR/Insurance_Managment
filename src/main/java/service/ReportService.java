@@ -5,8 +5,10 @@ import model.HomeInsurance;
 import model.Insurance;
 import model.LifeInsurance;
 
+import java.text.NumberFormat;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -19,7 +21,8 @@ public class ReportService {
     }
 
     public void generaterReport(){
-        InsuranceQuote quoter = new InsuranceQuote();
+        NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.US);
+        InsuranceQuoter quoter = new InsuranceQuoter();
         if(insurance == null || insurance.isEmpty()){
             System.out.println("There are no policies to generate a report!");
             return;
@@ -34,7 +37,7 @@ public class ReportService {
                 .mapToDouble(quoter::calculatePremium)
                 .average()
                 .orElse(0.0);
-        System.out.println("1. Average premium of all policies: $" + average);
+        System.out.println("1. Average premium of all policies: $" + currency.format(average));
         System.out.println();
 
         //Report 2. Policies by Type
@@ -54,7 +57,7 @@ public class ReportService {
                 .forEach(i -> {
                     System.out.println("   #" + counter[0]++ + " [" + i.policyId() + "] " +
                             getType(i) + " | " + i.client().name() + " | Prima: $" +
-                            quoter.calculatePremium(i));
+                            currency.format(quoter.calculatePremium(i)));
                 });
     }
 
