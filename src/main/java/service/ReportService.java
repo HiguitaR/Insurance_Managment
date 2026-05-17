@@ -20,7 +20,7 @@ public class ReportService {
         this.insurance = insurance;
     }
 
-    public void generaterReport(){
+    public void generateReport(){
         NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.US);
         InsuranceQuoter quoter = new InsuranceQuoter();
         if(insurance == null || insurance.isEmpty()){
@@ -37,7 +37,7 @@ public class ReportService {
                 .mapToDouble(quoter::calculatePremium)
                 .average()
                 .orElse(0.0);
-        System.out.println("1. Average premium of all policies: $" + currency.format(average));
+        System.out.println("1. Average premium of all policies: " + currency.format(average));
         System.out.println();
 
         //Report 2. Policies by Type
@@ -56,7 +56,7 @@ public class ReportService {
                 .limit(3)
                 .forEach(i -> {
                     System.out.println("   #" + counter[0]++ + " [" + i.policyId() + "] " +
-                            getType(i) + " | " + i.client().name() + " | Prima: $" +
+                            getType(i) + " | " + i.client().name() + " | Prima: " +
                             currency.format(quoter.calculatePremium(i)));
                 });
     }

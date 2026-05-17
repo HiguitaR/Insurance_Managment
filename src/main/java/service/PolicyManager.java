@@ -2,6 +2,8 @@ package service;
 
 import exception.BusinessRuleException;
 import model.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 import java.text.NumberFormat;
@@ -11,11 +13,13 @@ import java.util.Scanner;
 
 public class PolicyManager {
     private final List<Insurance> insurances;
-    private final Scanner input = new Scanner(System.in);
+    private final Scanner input;
+    private static final Logger logger = LogManager.getLogger(PolicyManager.class);
 
 
-    public PolicyManager(List<Insurance> insurances) {
+    public PolicyManager(List<Insurance> insurances, Scanner input) {
         this.insurances = insurances;
+        this.input = input;
     }
 
     public void listAll(){
@@ -27,8 +31,9 @@ public class PolicyManager {
         NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.US);
         InsuranceQuoter quoter = new InsuranceQuoter();
 
-        for(Insurance policy : insurances){
+        insurances.forEach(policy -> {
             double premium = quoter.calculatePremium(policy);
+
             System.out.printf("[%s] %s | Client: %s (%s) | Amount: %s | Annual premium: %s%n",
                     policy.policyId(),
                     getType(policy),
@@ -36,8 +41,8 @@ public class PolicyManager {
                     policy.client().clientId(),
                     currency.format(policy.amount()),
                     currency.format(premium)
-                    );
-        }
+            );
+        });
     }
 
     private String getType(Insurance policy){
@@ -48,9 +53,10 @@ public class PolicyManager {
         };
     }
 
-    public void newPolicy (String policyType) {
+    public void newPolicy () {
 
-        String type = policyType.strip().toUpperCase(Locale.ROOT);
+        System.out.println("Enter policy type (LIFE/CAR/HOME): ");
+        String type = input.nextLine().strip().toUpperCase(Locale.ROOT);
 
         System.out.println("Enter a Customer name: ");
         String name = input.nextLine().strip();
@@ -63,20 +69,16 @@ public class PolicyManager {
             case "LIFE" -> createLifeInsurance(client);
             case "CAR" -> createCarInsurance(client);
             case "HOME" -> createHomeInsurance(client);
-            default -> null;
+            default -> throw new BusinessRuleException("Invalid insurance Type: " + type);
         };
 
-        if(insurance != null){
-            boolean idExists = insurances.stream()
-                    .anyMatch(i -> i.policyId().equals(insurance.policyId()));
-            if(idExists){
-                throw new BusinessRuleException("Policy ID already exists: " + insurance.policyId());
-            }
-            insurances.add(insurance);
-            System.out.println("The Policy :" + insurance.policyId() + " Added Successful");
-        }else{
-            throw new BusinessRuleException("Wrong insurance type");
+        boolean idExists = insurances.stream()
+                .anyMatch(i -> i.policyId().equals(insurance.policyId()));
+        if(idExists){
+            throw new BusinessRuleException("Policy ID already exists: " + insurance.policyId());
         }
+        insurances.add(insurance);
+        logger.info("The Policy {}: Added Successful", insurance.policyId());
     }
 
     public List<Insurance> findPolicyById(String clientId){
@@ -151,7 +153,8 @@ public class PolicyManager {
         double amount = promptDouble("Enter a car insurance amount (USD): ",
                 "The policy amount couldn't be negative or zero");
 
-        int carModel = promptInt("Enter the car model (year): ", null);
+        int carModel = promptInt("Enter the car model (year): ",
+                "The car model couldn't be negative or zero");
 
         return new CarInsurance(getNewPolicyId(), client, amount, carModel);
     }

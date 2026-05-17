@@ -31,12 +31,10 @@ public class Main {
         String csvFile = "policies.csv";
 
         try {
-            System.out.println("Loading data...... " + csvFile);
+            logger.info("Loading data from {} ",  csvFile);
             List<Insurance> policies = fileHandler.loadFile(csvFile);
 
-            System.out.println("Success: " + policies.size() + " policies loaded.");
-            System.out.println();
-
+            logger.info("Loaded {} Policies Successfully", policies.size());
 
             System.out.println("--- Preview: First 5 Policies ---");
             policies.stream()
@@ -49,26 +47,38 @@ public class Main {
                             currency.format(p.amount())));
             System.out.println("----------------------------------------");
 
-            PolicyManager policyManager = new PolicyManager(policies);
+            PolicyManager policyManager = new PolicyManager(policies, sc);
             ReportService reportService = new ReportService(policies);
 
-            menuShow();
 
-            System.out.println("Enter an Option: ");
-            var option = sc.nextLine();
+
+            String option;
             do{
+                menuShow();
+                System.out.println("Enter an Option: ");
+                option = sc.nextLine();
                 switch (option){
                     case "1":
                         policyManager.listAll();
                         break;
                     case "2":
-                        policyManager.newPolicy(sc.nextLine());
+                        policyManager.newPolicy();
                         break;
                     case "3":
-                        policyManager.findPolicyById(sc.nextLine());
+                        System.out.println("Enter client Id: ");
+                        String clientId = sc.nextLine();
+                        List<Insurance> results = policyManager.findPolicyById(clientId);
+                        if(results.isEmpty()){
+                            System.out.println("No policies found." + clientId + ".");
+                        }else {
+                            results.forEach(p -> System.out.printf("[%s] %s |" +
+                                    " Client: %s (%s) | Amount: %s%n",
+                                    p.policyId(), getType(p), p.client().name(),
+                                    p.client().clientId(), currency.format(p.amount())));
+                        }
                         break;
                     case "4":
-                        reportService.generaterReport();
+                        reportService.generateReport();
                         break;
                     case "5":
                         System.out.println("Closing App see you soon!...");
@@ -76,18 +86,11 @@ public class Main {
                     default:
                         System.out.println("Enter a valid Option");
                 }
-                menuShow();
-                System.out.println("Enter an Option: ");
-                option = sc.nextLine();
             }while (!option.equals("5"));
             sc.close();
 
-        } catch (IOException e) {
-            System.err.println("ERROR: Could not read the file: " + e.getMessage());
-        } catch (InvalidPolicyDataException e) {
-            System.err.println("DATA WARNING: " + e.getMessage());
         } catch (Exception e) {
-            System.err.println("UNEXPECTED ERROR: " + e.getMessage());
+          logger.error("Unexpected Error! {}", e.getMessage());
         }
     }
 

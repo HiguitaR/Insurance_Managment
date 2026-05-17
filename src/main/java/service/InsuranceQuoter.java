@@ -1,13 +1,20 @@
 package service;
 
+import exception.BusinessRuleException;
 import model.CarInsurance;
 import model.HomeInsurance;
 import model.Insurance;
 import model.LifeInsurance;
 
+
 public class InsuranceQuoter {
     public double calculatePremium(Insurance insurance){
         double base;
+
+        if(insurance.client().age() <= 0){
+            throw new BusinessRuleException("Client age must be greater than 0: " +
+                    insurance.client().age());
+        }
 
         return switch (insurance){
             case LifeInsurance life -> {

@@ -2,7 +2,9 @@ package io;
 
 import exception.InvalidPolicyDataException;
 import model.*;
-import org.jspecify.annotations.NonNull;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,22 +15,29 @@ import java.util.List;
 
 public class FileHandler {
     private static final String SEPARATOR = ",";
+    private static final Logger logger= LogManager.getLogger(FileHandler.class);
 
-    public List<Insurance> loadFile(String filePath)
-            throws IOException, InvalidPolicyDataException {
+    public List<Insurance> loadFile(String filePath){
         List<Insurance> policies = new ArrayList<>();
-        Files.lines(Path.of(filePath))
-                .forEach(line -> {
-                    try{
-                        policies.add(parseLine(line));
-                    }catch (InvalidPolicyDataException e){
-                        throw new RuntimeException(e);
-                    }
-                });
+        AtomicInteger lineNumber = new AtomicInteger(0);
+        try{
+            Files.lines(Path.of(filePath))
+                    .forEach(line -> {
+                        lineNumber.incrementAndGet();
+                        try {
+                            policies.add(parseLine(line));
+                        }catch (InvalidPolicyDataException e){
+                            logger.error("Error when try to read this line {}: {}",
+                                    lineNumber.get(), e.getMessage());
+                        }
+                    });
+        }catch (IOException e){
+            logger.warn("Can't find policies.csv, Starting empty List");
+            return new ArrayList<>();
+        }
         return policies;
     }
 
-    @NonNull
     private Insurance parseLine(String line) throws InvalidPolicyDataException {
 
         String[] parts = line.split(SEPARATOR);
